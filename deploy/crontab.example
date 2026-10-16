@@ -1,0 +1,10 @@
+# Mart lead generation: every Monday at 08:00 (the machine's local time).
+# 1) Replace /full/path/to with the real path.  2) Run `mkdir -p /full/path/to/mart-lead-gen/logs` once.
+# 3) Install:  crontab -e   and paste the line below.   Check:  crontab -l
+#
+# run_weekly.py writes its own log (logs/weekly.log). cron.out only catches a crash that happens before
+# logging starts (for example a missing Python package).
+# Add MAILTO=you@example.com above the line if you want cron to email you any output.
+#
+# minute hour day-of-month month day-of-week(1=Mon)
+0 8 * * 1 /full/path/to/mart-lead-gen/deploy/run_weekly.sh >> /full/path/to/mart-lead-gen/logs/cron.out 2>&1

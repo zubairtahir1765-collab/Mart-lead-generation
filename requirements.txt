@@ -1,0 +1,6 @@
+requests
+python-dotenv
+gspread
+google-auth
+phonenumbers
+beautifulsoup4

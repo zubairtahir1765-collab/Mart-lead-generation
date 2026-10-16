@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mart Leads</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eaf0ee;--panel:#fff;--ink:#14231f;--mute:#5d6f69;--line:#d3ddd9;--brand:#0d5c4d;--brand2:#0a463a;
+--hi:#1f9d57;--hi-bg:#d9f2e3;--md:#c98a00;--md-bg:#fbefc9;--lo:#6b7a76;--lo-bg:#e4e9e7;--bad:#c2410c;--bad-bg:#fde4d6;
+--r:10px;font-family:Figtree,system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1a17;--panel:#15251f;--ink:#e6f0ec;--mute:#93a8a0;--line:#26403a;--brand:#4cc9ac;--brand2:#7fe0c7;
+--hi:#4fd18a;--hi-bg:#17402b;--md:#e8b730;--md-bg:#3d3212;--lo:#9aaba5;--lo-bg:#22332e;--bad:#ff9b6b;--bad-bg:#432314}}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-size:15px;line-height:1.5;display:flex;
+padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+h1,h2,h3{font-family:'Bricolage Grotesque',Figtree,sans-serif;margin:0;letter-spacing:-.02em}
+nav{width:208px;flex:none;background:var(--brand2);color:#e8f5f1;padding:22px 14px;display:flex;flex-direction:column;gap:4px}
+nav .logo{font:800 20px 'Bricolage Grotesque',Figtree,system-ui,sans-serif;padding:0 10px 18px;letter-spacing:-.03em}
+nav .logo small{display:block;font:400 12px Figtree,system-ui,sans-serif;opacity:.65;letter-spacing:0;margin-top:2px}
+nav a{padding:9px 12px;border-radius:8px;color:inherit;text-decoration:none;font-weight:500;opacity:.8;cursor:pointer}
+nav a:hover{opacity:1;background:rgba(255,255,255,.08)}nav a.on{opacity:1;background:rgba(255,255,255,.16)}
+nav .foot{margin-top:auto;padding:10px;font-size:12px;opacity:.7}
+main{flex:1;min-width:0;overflow:auto;padding:28px clamp(16px,3vw,40px) 60px}
+.view{display:none;max-width:1100px;margin:0 auto}.view.on{display:block}
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.top h1{font-size:30px}.top p{margin:2px 0 0;color:var(--mute)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+@media(max-width:860px){body{flex-direction:column}nav{width:auto;flex-direction:row;flex-wrap:wrap;padding:10px}nav .logo{padding:6px 10px}nav .foot{display:none}.g2{grid-template-columns:1fr}}
+.hero{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.crates{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;width:min(100%,300px)}
+.crates i{aspect-ratio:1;border-radius:4px;background:var(--lo-bg);display:block}.crates i.f{background:var(--brand)}
+.crates i.n{outline:2px solid var(--brand);outline-offset:1px;background:var(--panel)}
+.big{font:800 64px/1 'Bricolage Grotesque',Figtree,system-ui,sans-serif;letter-spacing:-.04em}.big span{font-size:24px;color:var(--mute);font-weight:500}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:600;background:var(--lo-bg);color:var(--lo)}
+.chip.High,.chip.ok,.chip.Interested{background:var(--hi-bg);color:var(--hi)}.chip.Medium,.chip.short,.chip.quota,.chip.Follow-up{background:var(--md-bg);color:var(--md)}
+.chip.error,.chip.Not-Interested{background:var(--bad-bg);color:var(--bad)}
+.meter{margin:12px 0}.meter b{display:flex;justify-content:space-between;font-weight:500;font-size:14px}
+.meter div{height:8px;border-radius:6px;background:var(--lo-bg);margin-top:5px;overflow:hidden}.meter div i{display:block;height:100%;background:var(--brand);border-radius:6px}
+.meter div i.warn{background:var(--md)}.meter div i.hot{background:var(--bad)}
+.hist{list-style:none;margin:8px 0 0;padding:0}.hist li{display:flex;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--line);font-size:14px}
+.hist li span:last-child{margin-left:auto;color:var(--mute)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+input,select,button{font:inherit;color:inherit}
+input[type=search],input[type=number],input[type=date],select{padding:8px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+input[type=search]{flex:1;min-width:180px}
+.pill{padding:6px 13px;border:1px solid var(--line);border-radius:99px;background:var(--panel);cursor:pointer;font-weight:500}
+.pill.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.btn{padding:10px 20px;border:0;border-radius:8px;background:var(--brand);color:#fff;font-weight:600;cursor:pointer}
+.btn:hover{background:var(--brand2)}.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--brand);border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+table{border-collapse:collapse;width:100%;min-width:760px}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;color:var(--mute);font-size:13px;background:var(--panel);position:sticky;top:0}
+tbody tr{cursor:pointer}tbody tr:hover{background:var(--bg)}td.name{font-weight:600;max-width:260px;overflow:hidden;text-overflow:ellipsis}
+.empty{padding:36px;text-align:center;color:var(--mute)}
+.drawer{position:fixed;inset:0 0 0 auto;width:min(440px,100%);background:var(--panel);border-left:1px solid var(--line);padding:24px;transform:translateX(105%);
+transition:transform .22s;overflow:auto;z-index:5;box-shadow:-12px 0 30px rgba(0,0,0,.12)}.drawer.on{transform:none}
+.drawer dl{display:grid;grid-template-columns:110px 1fr;gap:8px 12px;margin:16px 0}.drawer dt{color:var(--mute)}.drawer dd{margin:0;word-break:break-word}
+.drawer a{color:var(--brand)}.note{background:var(--bg);border-radius:8px;padding:10px 12px;font-size:14px;color:var(--mute)}
+.form{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.form label{display:grid;gap:6px;font-weight:600;font-size:14px}
+.checks{display:flex;gap:8px;flex-wrap:wrap}.checks label{font-weight:500;display:flex;gap:6px;align-items:center}
+pre{background:#0c1815;color:#cfe7df;border-radius:var(--r);padding:16px;height:340px;overflow:auto;font:13px/1.55 ui-monospace,Consolas,monospace;margin:14px 0 0;white-space:pre-wrap}
+pre .w{color:#f3c969}pre .e{color:#ff9b6b}.cmd{font:13px ui-monospace,Consolas,monospace;color:var(--mute);margin:12px 0 0}
+</style></head><body>
+<nav><div class="logo">Mart Leads<small>weekly lead desk</small></div>
+<a data-v="overview" class="on">Overview</a><a data-v="leads">Leads</a><a data-v="run">Run</a>
+<div class="foot" id="sheetnote"></div></nav>
+<main>
+<section class="view on" id="overview">
+ <div class="top"><div><h1 id="wk">This week</h1><p id="sub">Loading</p></div><span id="state"></span></div>
+ <div class="grid g2">
+  <div class="panel"><div class="hero"><div class="crates" id="crates"></div>
+   <div><div class="big" id="big">0<span> / 100</span></div><p style="color:var(--mute);margin:6px 0 0" id="short"></p></div></div></div>
+  <div class="panel"><h3>Google API use this month</h3><div id="meters"></div></div>
+  <div class="panel" style="grid-column:1/-1"><h3>Recent runs</h3><ul class="hist" id="hist"></ul></div>
+ </div>
+</section>
+<section class="view" id="leads">
+ <div class="top"><div><h1>Leads</h1><p id="lcount"></p></div></div>
+ <div class="bar"><input type="search" id="q" placeholder="Search name, city, phone, owner">
+  <span id="pf"></span><select id="cf"><option value="">All countries</option></select><select id="sf"><option value="">Any call status</option></select></div>
+ <div class="tw"><table><thead><tr><th>ID</th><th>Business</th><th>City</th><th>Priority</th><th>Automation</th><th>Rating</th><th>Phone</th><th>Call</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+<section class="view" id="run">
+ <div class="top"><div><h1>Run</h1><p>Start a lead run without the terminal. It uses the same limits and lock as the weekly schedule.</p></div></div>
+ <div class="panel"><div class="form">
+  <label>Leads wanted this week<input type="number" id="target" min="1" value="100"></label>
+  <label>Countries<div class="checks" id="countries"></div></label>
+  <label>City (optional)<select id="city"><option value="">All cities</option></select></label>
+  <label>Business type (optional)<select id="type"><option value="">All types</option></select></label>
+  <label>Mode<div class="checks"><label><input type="checkbox" id="dry" checked> Dry run: write nothing to the sheet</label></div></label></div>
+  <div class="bar" style="margin:18px 0 0"><button class="btn" id="go">Start run</button><span id="rmsg" style="color:var(--mute)"></span></div>
+  <div class="cmd" id="cmd"></div></div>
+ <pre id="log" data-fresh="1">Waiting for a run.</pre>
+</section>
+</main>
+<aside class="drawer" id="dr" aria-label="Lead details"></aside>
+<script>
+const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let S=null,L=[],pf='',off=null;
+const api=(p,b)=>fetch(p,b?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}:{}).then(r=>r.json());
+document.querySelectorAll('nav a').forEach(a=>a.onclick=()=>{document.querySelectorAll('nav a,.view').forEach(e=>e.classList.remove('on'));a.classList.add('on');$('#'+a.dataset.v).classList.add('on');if(a.dataset.v==='leads')loadLeads()});
+const ago=t=>{if(!t)return'';const m=Math.max(0,(Date.now()-new Date(t))/6e4);return m<60?Math.round(m)+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'};
+const say={ok:'On target',short:'Short of target',error:'Stopped by an error',quota:'Stopped at API limit',locked:'Already running',interrupted:'Interrupted'};
+async function status(){S=await api('/api/status');const t=S.target,a=S.week_added;
+ $('#wk').textContent=S.week?'Week '+S.week.split('-W')[1]+' of '+S.week.split('-')[0]:'This week';
+ $('#big').innerHTML=a+'<span> / '+t+'</span>';
+ $('#crates').innerHTML=Array.from({length:Math.min(t,100)},(_,i)=>`<i class="${i<a?'f':i===a?'n':''}"></i>`).join('');
+ const lr=S.last_run;$('#sub').textContent=lr?'Last run '+ago(lr.finished_at)+': '+lr.message:'No run yet. Start one from the Run tab.';
+ $('#short').textContent=a>=t?'Target reached for the week.':(t-a)+' more leads to reach the target.';
+ $('#state').innerHTML=S.running?'<span class="chip Medium">Run in progress</span>':lr?`<span class="chip ${lr.status}">${say[lr.status]||lr.status}</span>`:'';
+ const m=S.api_month;$('#meters').innerHTML=['search','details'].map(k=>{const u=m[k]||0,l=S.limits_month[k],p=l?Math.min(100,u/l*100):0;
+  return `<div class="meter"><b><span>${k==='search'?'Search requests':'Place detail requests'}</span><span>${u}${l?' of '+l:''}</span></b><div><i class="${p>90?'hot':p>70?'warn':''}" style="width:${p}%"></i></div></div>`}).join('')+'<p style="color:var(--mute);font-size:13px;margin:8px 0 0">Limits come from config.py and reset each month.</p>';
+ $('#hist').innerHTML=S.history.length?S.history.slice().reverse().map(h=>`<li><span class="chip ${h.status}">${h.status}</span><span>${h.dry_run?'Dry run, ':''}${h.added_this_run??0} added</span><span>${ago(h.finished_at)}</span></li>`).join(''):'<li style="color:var(--mute)">Nothing yet.</li>';
+ $('#sheetnote').textContent=S.sheet?'Google Sheet connected':'No sheet configured: dry runs only';
+ if(!$('#countries').children.length)initRun();$('#go').disabled=S.running}
+function initRun(){const o=S.options;$('#countries').innerHTML=Object.keys(o.locations).map(c=>`<label><input type="checkbox" value="${esc(c)}" ${o.active.includes(c)?'checked':''}> ${esc(c)}</label>`).join('');
+ $('#city').innerHTML+=Object.values(o.locations).flat().map(c=>`<option>${esc(c)}</option>`).join('');$('#type').innerHTML+=o.types.map(c=>`<option>${esc(c)}</option>`).join('');
+ document.querySelectorAll('#run input,#run select').forEach(e=>e.oninput=cmd);cmd()}
+function args(){const c=[...document.querySelectorAll('#countries input:checked')].map(e=>e.value).join(',');
+ return{dry_run:$('#dry').checked,target:$('#target').value,countries:c,cities:$('#city').value,types:$('#type').value}}
+function cmd(){const a=args();$('#cmd').textContent='python run_weekly.py'+(a.dry_run?' --dry-run':'')+` --target ${a.target||100}`+(a.countries?` --countries "${a.countries}"`:'')+(a.cities?` --cities "${a.cities}"`:'')+(a.types?` --types "${a.types}"`:'')}
+$('#go').onclick=async()=>{const a=args();if(!a.dry_run&&!confirm('This writes real leads to your Google Sheet and uses billed Google requests. Continue?'))return;
+ const r=await api('/api/run',a);$('#rmsg').textContent=r.ok?'Started.':r.error;if(r.ok){off=null;$('#log').textContent='';delete $('#log').dataset.fresh}status()};
+async function pollLog(){if(!$('#run').classList.contains('on'))return;const r=await api('/api/log'+(off!=null?'?offset='+off:''));off=r.offset;
+ if(r.text){const p=$('#log');if(p.dataset.fresh){p.textContent='';delete p.dataset.fresh}const stick=p.scrollTop+p.clientHeight>p.scrollHeight-40;
+  p.insertAdjacentHTML('beforeend',r.text.split('\n').filter(Boolean).map(l=>`<span class="${/ERROR/.test(l)?'e':/WARNING/.test(l)?'w':''}">${esc(l)}</span>\n`).join(''));if(stick)p.scrollTop=p.scrollHeight}}
+async function loadLeads(){L=await api('/api/leads');const cs=[...new Set(L.map(l=>l.country))].filter(Boolean);
+ $('#cf').innerHTML='<option value="">All countries</option>'+cs.map(c=>`<option>${esc(c)}</option>`).join('');
+ $('#sf').innerHTML='<option value="">Any call status</option>'+['Not Called','Called','No Answer','Interested','Not Interested','Follow-up'].map(c=>`<option>${c}</option>`).join('');
+ $('#pf').innerHTML=['','High','Medium','Low'].map(p=>`<button class="pill ${p===pf?'on':''}" data-p="${p}">${p||'All'}</button>`).join(' ');
+ document.querySelectorAll('.pill').forEach(b=>b.onclick=()=>{pf=b.dataset.p;loadLeads2()});drawRows()}
+const loadLeads2=()=>{document.querySelectorAll('.pill').forEach(b=>b.classList.toggle('on',b.dataset.p===pf));drawRows()};
+function drawRows(){const q=$('#q').value.toLowerCase(),c=$('#cf').value,s=$('#sf').value;
+ const f=L.filter(l=>(!pf||l.lead_priority===pf)&&(!c||l.country===c)&&(!s||l.call_status===s)&&(!q||[l.business_name,l.city,l.phone_number,l.owner_name,l.address].join(' ').toLowerCase().includes(q)));
+ $('#lcount').textContent=f.length+' of '+L.length+' leads'+(L.length?'':' (none saved yet)');
+ $('#rows').innerHTML=f.length?f.map(l=>`<tr data-id="${esc(l.lead_id)}"><td>${esc(l.lead_id)}</td><td class="name">${esc(l.business_name)}</td><td>${esc(l.city)}</td><td><span class="chip ${esc(l.lead_priority)}">${esc(l.lead_priority)}</span></td><td>${esc(l.automation_status)}</td><td>${l.google_rating??''} <small style="color:var(--mute)">(${l.reviews_count??0})</small></td><td>${esc(l.phone_number)}</td><td><span class="chip ${esc(l.call_status).replace(/ /g,'-')}">${esc(l.call_status)}</span></td></tr>`).join(''):'<tr><td colspan="8" class="empty">No leads match. Run the pipeline to fill this list.</td></tr>';
+ document.querySelectorAll('#rows tr[data-id]').forEach(r=>r.onclick=()=>open(r.dataset.id))}
+['#q','#cf','#sf'].forEach(s=>$(s).oninput=drawRows);
+function open(id){const l=L.find(x=>x.lead_id===id);if(!l)return;const row=(k,v)=>v?`<dt>${k}</dt><dd>${v}</dd>`:'';
+ const link=u=>u?`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\/(www\.)?/,''))}</a>`:'';
+ $('#dr').innerHTML=`<button class="btn ghost" id="x" style="float:right">Close</button><h2>${esc(l.business_name)}</h2><p style="color:var(--mute);margin:4px 0">${esc(l.business_type)} in ${esc(l.city)}, ${esc(l.country)}</p>
+ <span class="chip ${esc(l.lead_priority)}">${esc(l.lead_priority)} priority</span>
+ <dl>${row('Phone',`<a href="tel:${esc(l.phone_e164)}">${esc(l.phone_number)}</a>`)}${row('Email',esc(l.email))}${row('Owner',esc(l.owner_name))}${row('Address',esc(l.address))}${row('Website',link(l.website_url))}${row('Social',esc(l.social_links))}${row('Maps',link(l.google_maps_url))}${row('Orders',esc(l.order_method))}${row('Delivery',esc(l.delivery_system))}${row('Automation',esc(l.automation_status))}</dl>
+ ${l.priority_note||l.detection_note?`<div class="note">${esc([l.priority_note,l.detection_note].filter(Boolean).join(' | '))}</div>`:''}
+ <h3 style="margin-top:20px">Calling</h3><div class="form" style="margin-top:10px"><label>Call status<select id="cs">${['Not Called','Called','No Answer','Interested','Not Interested','Follow-up'].map(o=>`<option ${o===l.call_status?'selected':''}>${o}</option>`).join('')}</select></label>
+ <label>Follow-up date<input type="date" id="fd" value="${esc(l.follow_up_date)}"></label></div><div class="bar" style="margin-top:14px"><button class="btn" id="sv">Save</button><span id="sm" style="color:var(--mute)"></span></div>`;
+ $('#dr').classList.add('on');$('#x').onclick=()=>$('#dr').classList.remove('on');
+ $('#sv').onclick=async()=>{const r=await api('/api/lead',{lead_id:id,call_status:$('#cs').value,follow_up_date:$('#fd').value});l.call_status=$('#cs').value;l.follow_up_date=$('#fd').value;
+  $('#sm').textContent=r.synced?'Saved and updated in the sheet.':'Saved here. Sheet not updated.';drawRows()}}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')$('#dr').classList.remove('on')});
+status();setInterval(status,5000);setInterval(pollLog,1500);
+</script></body></html>

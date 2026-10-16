@@ -1,0 +1,76 @@
+# Weekly mart lead generation on GitHub's servers (no PC needs to be on).
+#
+# One-time setup: repo Settings > Secrets and variables > Actions > New repository secret:
+#   GOOGLE_PLACES_API_KEY       your Places API key
+#   GOOGLE_SHEET_ID             the id from the sheet's URL
+#   GOOGLE_CREDENTIALS_JSON     the ENTIRE contents of credentials.json (the service account key)
+# Optional: a repository *variable* WEEKLY_ARGS, e.g.  --countries "United Kingdom,UAE"
+#
+# This file must sit at <repo root>/.github/workflows/. If your repo root is the folder ABOVE mart-lead-gen,
+# move it there and uncomment the "defaults" block below.
+#
+# Notes: cron times are UTC and GitHub may start a run several minutes late. The runner is wiped after every run,
+# which is fine: the Google Sheet is what remembers old leads. Keep the repository PRIVATE (it holds your config), and
+# note that on public repositories GitHub switches scheduled workflows off after 60 days without repository activity.
+name: Weekly mart leads
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"          # Mondays 03:00 UTC
+  workflow_dispatch:             # "Run workflow" button, for testing
+    inputs:
+      args:
+        description: "Extra arguments for run_weekly.py, e.g. --dry-run --target 10 --cities Leeds"
+        required: false
+        default: ""
+
+concurrency:
+  group: weekly-leads
+  cancel-in-progress: false      # never cut a run short; the next one waits
+
+# defaults:
+#   run:
+#     working-directory: mart-lead-gen
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write the Google service account key
+        env:
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+        run: printf '%s' "$GOOGLE_CREDENTIALS_JSON" > credentials.json
+
+      - name: Run the weekly job
+        env:
+          GOOGLE_PLACES_API_KEY: ${{ secrets.GOOGLE_PLACES_API_KEY }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          PYTHONUTF8: "1"
+          RUN_ARGS: ${{ inputs.args || vars.WEEKLY_ARGS }}
+        # RUN_ARGS goes through an environment variable (not pasted into the command) on purpose.
+        # $RUN_ARGS is deliberately unquoted so several arguments split into separate words.
+        run: python run_weekly.py $RUN_ARGS
+
+      - name: Show the result
+        if: always()
+        run: cat logs/last_run.json || true
+
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-logs
+          path: logs/
+          retention-days: 30
+          if-no-files-found: ignore
